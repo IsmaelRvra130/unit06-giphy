@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+       
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Gifs</title>
+    <style type="text/css">
+
+    button,
+    div,
+    form,
+    input {
+    margin: 10px;
+    }
+
+    body {
+        background-image:url("https://www.designyourway.net/blog/wp-content/uploads/2017/12/4470644-hipster-wallpaper-hd.png");
+        background-size: cover;  
+    }
+
+    .container {
+        background-image: url("https://bestwallpapers.co/wp-content/uploads/2018/05/hd-wallpapers-4k-find-best-latest-in-for-your.jpg");
+        width: 100%;
+        background-size: cover;
+        height: 500px;
+        position: center;
+        opacity: .9;
+    }
+
+    button {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        border-bottom-style: hidden;
+        background-color: rgba(0, 128, 128, 0.973);
+        border-radius: 15px;
+        color:white;
+        padding: 8px;
+        text-align: center;  
+    }
+
+    #buttons-view {
+       float:inline-start;
+        width: auto;
+        height: auto;
+        border-right-color: darkgoldenrod
+    } 
+
+    #topic-form {
+        color: rgba(205, 175, 92, 0.87);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        text-align: center;
+        font-style: bold;
+        font-size: 25px;
+    }
+
+    #topic-input {
+        border-radius: 15px;
+        height: 60px;
+        width: 800px;
+        font-size: 30px;
+        color:indianred;
+        background-color:indigo;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  
+    }
+
+    #add-topic {
+        margin-left: 300px;
+        border-radius: 15px;
+        height: 60px;
+        width: 200px;
+        font-size: 30px;
+        color:indigo;
+        background-color:indianred;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  
+
+    }
+
+    #gifsGoHere {
+        height: auto;
+        width: auto;
+        margin-left: 450px;
+        
+    }
+
+    .topic {
+        float:left;
+    }
+
+    </style>
+</head>
+       
+<body>
+    
+    <div class="container"> 
+        <!--Topic form input-->  
+        <form id="topic-form">
+                <label for="topic-input">GIF ATTACK!</label>
+                <input type="text" onfocus="this.value=''" id="topic-input" ><br>
+                <input id="add-topic" type="submit" value="Add a Topic">
+        </form>
+
+        <!--Div for the generated buttons-->
+        <div id="buttons-view"></div>
+
+        <!--Div for generated gifs-->
+        <div id="gifsGoHere"></div>
+
+       <!--Calling Jquery-->
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+        <!--Start of javascript-->
+        <script type="text/javascript">
+             
+             //Array of topics.
+        var topics = ["Outer space", "planets", "Steelers", "NASA"];
+
+            //Generate gif function.
+        function displayGif() {
+            var topic = $(this).attr("search");
+            console.log(this);
+            var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + topic + "&api_key=Jz4eohHlV9C2OQfxcQkV4tIwX1EtK9zN&rating&limit=10";
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            }).then(function(response) {
+                var topicDiv = $("<div class='topic'>");
+                var gifImage = $("<img class='gif center-block'>");
+                var rating = response.Rating;
+                var p = $("<p> ")
+                /*gifImage.attr('src', response.images.fixed_height_still.url);
+                gifImage.attr('alt',alt);
+                gifImage.attr('data-state','still');
+                gifImage.attr('data-still',response.images.fixed_height_still.url);
+                gifImage.attr('data-active', response.images.fixed_height.url);
+                    
+                topicDiv.append(p);
+                topicDiv.prepend(gifImage);
+                $('.gif-holder').prepend(topicDiv);*/
+                for(var i = 0; i < response.data.length; i++) {
+                $('#gifsGoHere').prepend("<p>Rated: " + response.data[i].rating + "</p>");
+                $('#gifsGoHere').prepend("<img src='" + response.data[i].images.fixed_height.url +  " '>");
+                    //console.log(response);
+                }
+                console.log(this);
+            });
+        }
+
+            //Activate or stop gif **NOT WORKING**
+        $(document).on('click', '.gif',function() {
+            var state = $(this).attr("data-state");
+            if (state === "still") {
+            $(this).attr("src", $(this).data("active"));
+            $(this).attr("data-state", "active");
+            } else {
+            $(this).attr("src", $(this).data("still"));
+            $(this).attr("data-state", "still");
+            }
+        });
+
+       
+             // Function for generating topics buttons.
+        function addButtons() {
+            $("#buttons-view").empty();
+            for (var i = 0; i < topics.length; i++) {
+            var a = $("<button>");
+            a.addClass("topic");
+            a.attr("search", topics[i]);
+            a.text(topics[i]);
+            $("#buttons-view").append(a);
+            }
+        }
+       
+             // function pushes the searched topic into the array.
+        $("#add-topic").on("click", function(event) {
+            event.preventDefault();
+            var topic = $("#topic-input").val().trim();
+            topics.push(topic);
+            addButtons();
+        });
+
+             // Calling the addButtons function.
+        addButtons();
+        $(document).on("click", ".topic", displayGif);
+
+
+    </script>
+    </div>
+    
+</body>
+       
+</html>
