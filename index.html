@@ -19,6 +19,13 @@
         background-size: cover;  
     }
 
+    p {
+        color: red;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-size: 15px;
+        font-display: bold;
+    }
+
     .container {
         background-image: url("https://bestwallpapers.co/wp-content/uploads/2018/05/hd-wallpapers-4k-find-best-latest-in-for-your.jpg");
         width: 100%;
@@ -50,21 +57,21 @@
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         text-align: center;
         font-style: bold;
-        font-size: 25px;
+        font-size: 30px;
     }
 
     #topic-input {
         border-radius: 15px;
         height: 60px;
         width: 800px;
-        font-size: 30px;
+        font-size: 50px;
         color:indianred;
         background-color:indigo;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  
     }
 
     #add-topic {
-        margin-left: 300px;
+        margin-left: 250px;
         border-radius: 15px;
         height: 60px;
         width: 200px;
@@ -111,6 +118,7 @@
 
         <!--Div for generated gifs-->
         <div id="gifsGoHere"></div>
+        <div class="gif"></div>
 
        <!--Calling Jquery-->
 
@@ -123,44 +131,15 @@
         var topics = ["Outer space", "planets", "Steelers", "NASA"];
 
             //Generate gif function.
-        function displayGif() {
-            var topic = $(this).attr("search");
-            console.log(this);
-            var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + topic + "&api_key=Jz4eohHlV9C2OQfxcQkV4tIwX1EtK9zN&rating&limit=10";
-            $.ajax({
-                url: queryURL,
-                method: "GET"
-            }).then(function(response) {
-                var topicDiv = $("<div class='topic'>");
-                var gifImage = $("<img class='gif center-block'>");
-                var rating = response.Rating;
-                var p = $("<p> ")
-                /*gifImage.attr('src', response.images.fixed_height_still.url);
-                gifImage.attr('alt',alt);
-                gifImage.attr('data-state','still');
-                gifImage.attr('data-still',response.images.fixed_height_still.url);
-                gifImage.attr('data-active', response.images.fixed_height.url);
-                    
-                topicDiv.append(p);
-                topicDiv.prepend(gifImage);
-                $('.gif-holder').prepend(topicDiv);*/
-                for(var i = 0; i < response.data.length; i++) {
-                $('#gifsGoHere').prepend("<p>Rated: " + response.data[i].rating + "</p>");
-                $('#gifsGoHere').prepend("<img src='" + response.data[i].images.fixed_height.url +  " '>");
-                    //console.log(response);
-                }
-                console.log(this);
-            });
-        }
 
             //Activate or stop gif **NOT WORKING**
         $(document).on('click', '.gif',function() {
             var state = $(this).attr("data-state");
             if (state === "still") {
-            $(this).attr("src", $(this).data("active"));
+             $(this).attr("src", $(this).attr('data-active'));
             $(this).attr("data-state", "active");
             } else {
-            $(this).attr("src", $(this).data("still"));
+             $(this).attr("src", $(this).attr("data-still"));
             $(this).attr("data-state", "still");
             }
         });
@@ -188,7 +167,34 @@
 
              // Calling the addButtons function.
         addButtons();
-        $(document).on("click", ".topic", displayGif);
+        $(document).on("click", ".topic", function () {
+            var topic = $(this).attr("search");
+            console.log($(this));
+            var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + topic + "&api_key=Jz4eohHlV9C2OQfxcQkV4tIwX1EtK9zN&rating&limit=10";
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            }).then(function(response) {
+                console.log(response);
+                for(var i = 0; i < response.data.length; i++) {
+                    var topicDiv = $("<div class='topic'>");
+                    var gifImage = $("<img class='gif'>");
+                    var rating = response.Rating;
+                    var p = $("<p> ")
+                    gifImage.attr('src', response.data[i].images.fixed_height_still.url);
+                    gifImage.attr('data-state','still');
+                    gifImage.attr('data-still',response.data[i].images.fixed_height_still.url);
+                    gifImage.attr('data-active', response.data[i].images.fixed_height.url);
+                    topicDiv.append(p);
+                    topicDiv.prepend(gifImage);
+                    $('.gif').prepend(topicDiv);
+                    $('.gif').prepend("<p>Rated: " + response.data[i].rating + "</p>");
+                        $('.gif').prepend("<img src='" + response.data[i].images.fixed_height.url +  " '>");
+                    //console.log(response);
+                }
+                
+            });
+        });
 
 
     </script>
